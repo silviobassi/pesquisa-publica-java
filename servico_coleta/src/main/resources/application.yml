@@ -1,0 +1,28 @@
+server:
+  port: 8081
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: servico_coleta
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+queue:
+  name: respostasQuestionario
+
+resilience4j.circuitbreaker:
+  instances:
+    enviarPesquisaRespondida:
+      minimum-number-of-calls: 3
+      sliding-window-size: 6
+
+logging:
+  level:
+    io.github.resilience4j.circuitbreaker: DEBUG
+

@@ -1,0 +1,39 @@
+@startuml
+entity "Pesquisa" as Pesquisa {
+    int id
+    String code
+    LocalDateTime periodo
+}
+
+entity "Respondedor" as Respondedor {
+    int id
+    String nome
+    String email
+    int idade
+}
+
+entity "Pergunta" as Pergunta {
+    long id
+    String titulo
+}
+
+entity "Resposta" as Resposta {
+    int id
+    String titulo
+}
+
+entity "RespondedorResposta" as RespondedorResposta {
+    int id
+    int respondedorId
+    int respostaId
+}
+
+Pesquisa ||--o{ Pergunta : tem
+Pesquisa ||--o{ Respondedor : tem
+Resposta }o--o{ Respondedor : tem
+Pergunta ||--o{ Resposta : tem
+
+RespondedorResposta ||--o{ Respondedor : tem
+RespondedorResposta ||--o{ Resposta : tem
+
+@enduml
