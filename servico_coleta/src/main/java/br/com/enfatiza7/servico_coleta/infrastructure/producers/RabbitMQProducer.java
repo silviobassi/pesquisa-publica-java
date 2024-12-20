@@ -1,8 +1,6 @@
 package br.com.enfatiza7.servico_coleta.infrastructure.producers;
 
-import br.com.enfatiza7.servico_coleta.event.PesquisaRespondidaEvent;
-import br.com.enfatiza7.servico_coleta.services.GeradorDeEventoDePesquisaRespondidaService;
-import br.com.enfatiza7.servico_coleta.services.GeradorDeEventoDePesquisaRespondidaServiceImpl;
+import br.com.enfatiza7.servico_coleta.event.IntegrationEvent;
 import br.com.enfatiza7.servico_coleta.web.dtos.PesquisaRespondidaDto;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.amqp.core.Queue;
@@ -12,19 +10,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RabbitMQProducer implements MessageBus {
+public class RabbitMQProducer implements EventBus {
 
-    final GeradorDeEventoDePesquisaRespondidaService geradorDeEventoDePesquisaRespondidaService;
     final RabbitTemplate rabbitTemplate;
 
     @Value("${queue.name}")
     private String queueName;
 
-    public RabbitMQProducer(
-            GeradorDeEventoDePesquisaRespondidaServiceImpl geracaoDeRespostasService,
-            RabbitTemplate rabbitTemplate) {
-
-        this.geradorDeEventoDePesquisaRespondidaService = geracaoDeRespostasService;
+    public RabbitMQProducer(RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
     }
 
@@ -33,13 +26,10 @@ public class RabbitMQProducer implements MessageBus {
         return new Queue(queueName, true);
     }
 
-    @CircuitBreaker(name = "enviarPesquisaRespondida", fallbackMethod = "fallbackEnviaPesquisaRespondida")
-    public void enviar(PesquisaRespondidaDto pesquisaRespondidaDto) {
-
-        //throw new RuntimeException("Erro ao enviar pesquisa respondida");
-
-        PesquisaRespondidaEvent pesquisaRespondidaEvent = geradorDeEventoDePesquisaRespondidaService.gerar(pesquisaRespondidaDto);
-        rabbitTemplate.convertAndSend(queueName, pesquisaRespondidaEvent);
+    @CircuitBreaker(name = "enviaPesquisaRespondida", fallbackMethod = "fallbackEnviaPesquisaRespondida")
+    @Override
+    public <T extends IntegrationEvent> void publish(T event) {
+        rabbitTemplate.convertAndSend(queueName, event);
     }
 
     public void fallbackEnviaPesquisaRespondida(PesquisaRespondidaDto pesquisaRespondidaDto, Throwable t) {

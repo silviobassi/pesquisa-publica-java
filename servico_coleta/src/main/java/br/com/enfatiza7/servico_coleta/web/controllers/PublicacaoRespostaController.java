@@ -1,7 +1,6 @@
 package br.com.enfatiza7.servico_coleta.web.controllers;
 
-import br.com.enfatiza7.servico_coleta.infrastructure.producers.RabbitMQProducer;
-import br.com.enfatiza7.servico_coleta.infrastructure.producers.MessageBus;
+import br.com.enfatiza7.servico_coleta.services.ServicoDeColeta;
 import br.com.enfatiza7.servico_coleta.web.dtos.PesquisaRespondidaDto;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,15 +11,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/respostas")
 public class PublicacaoRespostaController {
 
-    final MessageBus publicadorDeRespostaService;
+    private final ServicoDeColeta servicoDeColeta;
 
-    public PublicacaoRespostaController(RabbitMQProducer publicadorDeRespostaService) {
-        this.publicadorDeRespostaService = publicadorDeRespostaService;
+    public PublicacaoRespostaController(ServicoDeColeta servicoDeColeta) {
+        this.servicoDeColeta = servicoDeColeta;
     }
 
     @PostMapping()
     public void postResposta(@RequestBody PesquisaRespondidaDto resposta) {
-        publicadorDeRespostaService.enviar(resposta);
+        servicoDeColeta.processar(resposta);
     }
-
 }
