@@ -12,6 +12,6 @@ public class AssemblerRespostaDto {
     public List<Resposta> toListaRespostas(List<RespostaDto> respostasDto) {
         return respostasDto
                 .stream()
-                .map(resposta -> new Resposta(resposta.id())).toList();
+                .map(respostaDto -> new Resposta(respostaDto.id())).toList();
     }
 }

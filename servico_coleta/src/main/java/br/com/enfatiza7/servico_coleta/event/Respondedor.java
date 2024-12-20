@@ -1,4 +1,5 @@
 package br.com.enfatiza7.servico_coleta.event;
+
 public class Respondedor {
     public String nome;
     public String email;

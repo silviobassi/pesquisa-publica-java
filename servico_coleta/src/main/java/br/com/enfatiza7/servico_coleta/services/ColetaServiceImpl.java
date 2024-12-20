@@ -12,14 +12,14 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class ServicoDeColetaImpl implements ServicoDeColeta {
+public class ColetaServiceImpl implements ColetaService {
 
     final EventBus eventBus;
 
     final AssemblerRespondedorDto assemblerRespondedorDto;
     final AssemblerRespostaDto assemblerRespostaDto;
 
-    public ServicoDeColetaImpl(EventBus eventBus, AssemblerRespondedorDto assemblerRespondedorDto, AssemblerRespostaDto assemblerRespostaDto) {
+    public ColetaServiceImpl(EventBus eventBus, AssemblerRespondedorDto assemblerRespondedorDto, AssemblerRespostaDto assemblerRespostaDto) {
         this.eventBus = eventBus;
         this.assemblerRespondedorDto = assemblerRespondedorDto;
         this.assemblerRespostaDto = assemblerRespostaDto;
